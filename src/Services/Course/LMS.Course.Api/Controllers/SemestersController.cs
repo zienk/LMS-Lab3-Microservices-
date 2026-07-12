@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Course.Api.Controllers;
 
+/// <summary>
+/// Nhóm API tra cứu học kỳ.
+/// </summary>
 [ApiController]
 [Route("api/semesters")]
 [Route("api/v{version:apiVersion}/semesters")]
@@ -17,6 +20,14 @@ public class SemestersController : ControllerBase
 
     public SemestersController(ISemesterService semesterService) => _semesterService = semesterService;
 
+    /// <summary>
+    /// Lấy danh sách học kỳ.
+    /// </summary>
+    /// <remarks>
+    /// API cần JWT hợp lệ.
+    /// Dữ liệu học kỳ được seed trong Course DB, tối thiểu 5 học kỳ theo yêu cầu Lab 1.
+    /// Hỗ trợ phân trang bằng `page` và `size`.
+    /// </remarks>
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int size = 10)
     {

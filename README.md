@@ -13,6 +13,7 @@ docker compose up --build
 | Component | URL |
 |---|---|
 | API Gateway | `http://localhost:5000` |
+| API Gateway Swagger | `http://localhost:5000/swagger` |
 | Identity Service Swagger | `http://localhost:5001/swagger` |
 | Student Service Swagger | `http://localhost:5002/swagger` |
 | Course Service Swagger | `http://localhost:5003/swagger` |
@@ -35,3 +36,4 @@ role: Admin
 
 Postman collection: `postman/LMS-Microservices.postman_collection.json`.
 Architecture report: `Docs/Architecture-Report.md`.
+Swagger guide: `Docs/Swagger-Huong-Dan.md`.
