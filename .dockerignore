@@ -1,0 +1,68 @@
+# Git and editor metadata
+.git/
+.gitignore
+.vs/
+.vscode/
+.idea/
+
+# .NET build output
+**/bin/
+**/obj/
+**/[Dd]ebug/
+**/[Rr]elease/
+artifacts/
+.artifacts/
+
+# Test and coverage output
+TestResults/
+**/TestResults/
+coverage/
+coverage*.json
+coverage*.xml
+coverage*.info
+*.trx
+
+# Local/user files
+*.user
+*.suo
+*.rsuser
+*.userosscache
+*.sln.docstates
+*.log
+*.tmp
+*.cache
+*.pid
+*.pidb
+*.pdb
+*.mdb
+*.opendb
+*.sdf
+
+# Local secrets and generated environment files
+.env
+.env.*
+*.pfx
+*.snk
+*.publishsettings
+*.pubxml
+
+# Runtime/database artifacts
+*.mdf
+*.ldf
+*.ndf
+*.db
+*.sqlite
+
+# Package/cache folders not needed by Docker build
+**/[Pp]ackages/
+node_modules/
+.nuget/
+
+# Deliverables/docs are not copied by service Dockerfiles
+Docs/
+postman/
+
+# OS clutter
+Thumbs.db
+Desktop.ini
+.DS_Store

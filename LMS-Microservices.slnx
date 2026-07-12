@@ -1,0 +1,30 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/ApiGateway/">
+    <Project Path="src/ApiGateway/LMS.ApiGateway/LMS.ApiGateway.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/Course/">
+    <Project Path="src/Services/Course/LMS.Course.Api/LMS.Course.Api.csproj" />
+    <Project Path="src/Services/Course/LMS.Course.Application/LMS.Course.Application.csproj" />
+    <Project Path="src/Services/Course/LMS.Course.Domain/LMS.Course.Domain.csproj" />
+    <Project Path="src/Services/Course/LMS.Course.GrpcClient/LMS.Course.GrpcClient.csproj" />
+    <Project Path="src/Services/Course/LMS.Course.Infrastructure/LMS.Course.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Identity/">
+    <Project Path="src/Services/Identity/LMS.Identity.Api/LMS.Identity.Api.csproj" />
+    <Project Path="src/Services/Identity/LMS.Identity.Application/LMS.Identity.Application.csproj" />
+    <Project Path="src/Services/Identity/LMS.Identity.Domain/LMS.Identity.Domain.csproj" />
+    <Project Path="src/Services/Identity/LMS.Identity.Infrastructure/LMS.Identity.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/Student/">
+    <Project Path="src/Services/Student/LMS.Student.Api/LMS.Student.Api.csproj" />
+    <Project Path="src/Services/Student/LMS.Student.Application/LMS.Student.Application.csproj" />
+    <Project Path="src/Services/Student/LMS.Student.Domain/LMS.Student.Domain.csproj" />
+    <Project Path="src/Services/Student/LMS.Student.Grpc/LMS.Student.Grpc.csproj" />
+    <Project Path="src/Services/Student/LMS.Student.Infrastructure/LMS.Student.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/LMS.Shared.Contracts/LMS.Shared.Contracts.csproj" />
+  </Folder>
+</Solution>

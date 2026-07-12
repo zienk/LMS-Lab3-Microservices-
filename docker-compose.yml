@@ -1,0 +1,96 @@
+services:
+  identity-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong@Passw0rd"
+    ports:
+      - "14331:1433"
+    volumes:
+      - identity-data:/var/opt/mssql
+
+  student-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong@Passw0rd"
+    ports:
+      - "14332:1433"
+    volumes:
+      - student-data:/var/opt/mssql
+
+  course-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong@Passw0rd"
+    ports:
+      - "14333:1433"
+    volumes:
+      - course-data:/var/opt/mssql
+
+  identity-service:
+    build: 
+      context: .
+      dockerfile: src/Services/Identity/LMS.Identity.Api/Dockerfile
+    depends_on:
+      - identity-db
+    environment:
+      ConnectionStrings__Default: "Server=identity-db,1433;Database=LmsIdentityDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True"
+      Jwt__Key: "lms-super-secret-jwt-key-min-32-chars-here!!"
+      Jwt__Issuer: "LMS.Identity"
+      Jwt__Audience: "LMS.Client"
+      Jwt__ExpiresInMinutes: "60"
+    ports:
+      - "5001:8080"
+
+  student-service:
+    build:
+      context: .
+      dockerfile: src/Services/Student/LMS.Student.Api/Dockerfile
+    depends_on:
+      - student-db
+    environment:
+      ConnectionStrings__Default: "Server=student-db,1433;Database=LmsStudentDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True"
+      Jwt__Key: "lms-super-secret-jwt-key-min-32-chars-here!!"
+      Jwt__Issuer: "LMS.Identity"
+      Jwt__Audience: "LMS.Client"
+    ports:
+      - "5002:8080"
+      - "6001:6001"
+
+  course-service:
+    build:
+      context: .
+      dockerfile: src/Services/Course/LMS.Course.Api/Dockerfile
+    depends_on:
+      - course-db
+      - student-service
+    environment:
+      ConnectionStrings__Default: "Server=course-db,1433;Database=LmsCourseDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True"
+      GrpcSettings__StudentServiceUrl: "http://student-service:6001"
+      Jwt__Key: "lms-super-secret-jwt-key-min-32-chars-here!!"
+      Jwt__Issuer: "LMS.Identity"
+      Jwt__Audience: "LMS.Client"
+    ports:
+      - "5003:8080"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: src/ApiGateway/LMS.ApiGateway/Dockerfile
+    depends_on:
+      - identity-service
+      - student-service
+      - course-service
+    environment:
+      Jwt__Key: "lms-super-secret-jwt-key-min-32-chars-here!!"
+      Jwt__Issuer: "LMS.Identity"
+      Jwt__Audience: "LMS.Client"
+    ports:
+      - "5000:8080"
+
+volumes:
+  identity-data:
+  student-data:
+  course-data:
