@@ -15,6 +15,7 @@ using LMS.Student.Api.Middleware;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +60,11 @@ builder.Services.AddApiVersioning(options =>
         new MediaTypeApiVersionReader("x-api-version")
     );
 });
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 // JWT
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "super-secret-key-min-32-characters!!";
@@ -91,6 +97,12 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Student Service API",
         Version = "v1",
         Description = "Quản lý thông tin sinh viên, hỗ trợ REST API và gRPC server để Course Service kiểm tra sinh viên tồn tại."
+    });
+    c.SwaggerDoc("v2", new OpenApiInfo
+    {
+        Title = "Student Service API",
+        Version = "v2",
+        Description = "Student profile APIs, including REST endpoints and the Student gRPC server used by Course Service."
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -125,7 +137,14 @@ app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseSerilogRequestLogging();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+app.UseSwaggerUI(options =>
+{
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"Student Service API {description.GroupName.ToUpperInvariant()}");
+    }
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
