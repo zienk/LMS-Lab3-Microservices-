@@ -13,6 +13,7 @@ using System.Text;
 using LMS.Identity.Api.Middleware;
 using LMS.Identity.Domain.Entities;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +56,11 @@ builder.Services.AddApiVersioning(options =>
         new Microsoft.AspNetCore.Mvc.Versioning.MediaTypeApiVersionReader("x-api-version")
     );
 });
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 // JWT
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new Exception("JWT Key not configured.");
@@ -87,6 +93,11 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Identity Service API",
         Version = "v1",
         Description = "Quản lý đăng ký, đăng nhập, JWT access token, refresh token và logout cho hệ thống LMS."
+    });
+    c.DocInclusionPredicate((documentName, apiDescription) =>
+    {
+        var relativePath = apiDescription.RelativePath ?? string.Empty;
+        return relativePath.StartsWith($"api/{documentName}/", StringComparison.OrdinalIgnoreCase);
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -121,7 +132,14 @@ app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseSerilogRequestLogging();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+app.UseSwaggerUI(options =>
+{
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"Identity Service API {description.GroupName.ToUpperInvariant()}");
+    }
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -104,6 +104,11 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v2",
         Description = "Student profile APIs, including REST endpoints and the Student gRPC server used by Course Service."
     });
+    c.DocInclusionPredicate((documentName, apiDescription) =>
+    {
+        var relativePath = apiDescription.RelativePath ?? string.Empty;
+        return relativePath.StartsWith($"api/{documentName}/", StringComparison.OrdinalIgnoreCase);
+    });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
